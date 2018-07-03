@@ -1,0 +1,31 @@
+make[1]: Entering directory '/work/projects/sdk/simple_pair/user'
+DEPEND: xtensa-lx106-elf-gcc -M -Os -g -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections -fdata-sections -fno-builtin-printf -DICACHE_FLASH -I include -I ./ -I ../../include/ets -I ../include -I ../../include -I ../../include/eagle -I ../../driver_lib/include user_main.c
+
+
+xtensa-lx106-elf-gcc -Os -g -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections -fdata-sections -fno-builtin-printf  -DICACHE_FLASH   -I include -I ./ -I ../../include/ets -I ../include -I ../../include -I ../../include/eagle -I ../../driver_lib/include  -o .output/eagle/debug/obj/user_main.o -c user_main.c
+
+xtensa-lx106-elf-ar ru .output/eagle/debug/lib/libuser.a .output/eagle/debug/obj/user_main.o 
+xtensa-lx106-elf-ar: creating .output/eagle/debug/lib/libuser.a
+
+make[1]: Leaving directory '/work/projects/sdk/simple_pair/user'
+xtensa-lx106-elf-gcc  -L../lib -nostdlib -T../ld/eagle.app.v6.ld -Wl,--no-check-sections -Wl,--gc-sections -u call_user_start -Wl,-static -Wl,--start-group -lc -lgcc -lhal -lphy -lpp -lnet80211 -llwip -lwpa -lmain -lespnow -lcrypto user/.output/eagle/debug/lib/libuser.a -Wl,--end-group -o .output/eagle/debug/image/eagle.app.v6.out 
+
+
+
+
+
+
+
+
+Analysis
+Flashing
+0x0 	../bin/eagle.flash.bin
+0x10000 ../bin/eagle.irom0text.bin
+
+
+gen_appbin.py eagle.app.out
+generate  eagle.app.flash.bin and then 
+Makefile do 
+@mv eagle.app.flash.bin ../bin/eagle.flash.bin
+@mv eagle.app.v6.irom0text.bin ../bin/eagle.irom0text.bin
+
