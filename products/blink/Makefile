@@ -21,8 +21,7 @@ LIBS_PATH = -L$(ESP_SDK)/lib
 LIB_LD = -T$(ESP_SDK)/ld/eagle.app.v6.ld
 LIBS = -lc -lgcc -lhal -lphy -lpp -lnet80211 -llwip -lwpa -lmain 	-lespnow -lcrypto 
 
-TARGET_LDFLAGS += -g -O2
-    
+TARGET_LDFLAGS += -g -O2    
 INCLUDES +=	-I$(ESP_SDK)/include -I$(ESP_SDK)/driver_lib/include -I.	
 
 BINDIR=../../bin
