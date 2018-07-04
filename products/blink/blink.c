@@ -7,6 +7,8 @@
 #include "espconn.h"
 #include "mem.h"
 
+#include "test1.h"
+
 static volatile os_timer_t some_timer;
 
 uint32 ICACHE_FLASH_ATTR
@@ -55,7 +57,7 @@ void ICACHE_FLASH_ATTR some_timerfunc(void	*arg){
 		GPIO_OUTPUT_SET(LED, 1);
 	}
 	else {
-		GPIO_OUTPUT_SET(LED, 0);
+		GPIO_OUTPUT_SET(LED, 1);
 	}
 }
 
