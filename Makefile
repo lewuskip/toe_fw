@@ -48,7 +48,6 @@ $(TARGET_LIB): $(TARGET_APP_LIB)
 	$(TOOLCHAIN)gcc $(LIBS_PATH) -nostdlib $(LIB_LD) $(TARGET_LDFLAGS) $(LIBS) $< -Wl,--end-group -o $@
 
 $(TARGET_FW_IMAGE): $(TARGET_LIB)
-	@mkdir -p $(@D)
 	@$(OBJCOPY) --only-section .text -O binary $< eagle.app.v6.text.bin
 	@$(OBJCOPY) --only-section .data -O binary $< eagle.app.v6.data.bin
 	@$(OBJCOPY) --only-section .rodata -O binary $< eagle.app.v6.rodata.bin
@@ -61,6 +60,7 @@ $(TARGET_FW_IMAGE): $(TARGET_LIB)
 	@mv eagle.app.flash.bin $(TARGET_FW_IMAGE)_0.bin
 
 $(APP_OBJECTS): $(APP_SRC) $(APP_HEADERS)
+	@mkdir -p $(@D)
 	$(TOOLCHAIN)gcc $(CCFLAGS) $(INCLUDES) -c $< -o $@
 
 .PRECIOUS: $(TARGET_IMAGE) $(TARGET_LIB) $(APP_OBJECTS)
