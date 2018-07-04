@@ -59,8 +59,11 @@ $(TARGET_FW_IMAGE): $(TARGET_LIB)
 	@mv eagle.app.v6.irom0text.bin $(TARGET_FW_IMAGE)_0x10000.bin
 	@mv eagle.app.flash.bin $(TARGET_FW_IMAGE)_0.bin
 
-$(APP_OBJECTS): $(APP_SRC) $(APP_HEADERS)
+$(OBJDIR)/%.o: %.c
 	@mkdir -p $(@D)
+	@echo $<
+	@echo $@
+	@echo $(APP_SRC)
 	$(TOOLCHAIN)gcc $(CCFLAGS) $(INCLUDES) -c $< -o $@
 
 .PRECIOUS: $(TARGET_IMAGE) $(TARGET_LIB) $(APP_OBJECTS)
