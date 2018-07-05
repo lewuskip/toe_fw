@@ -54,20 +54,19 @@ $(TARGET_FW_IMAGE): $(TARGET_LIB)
 	@$(OBJCOPY) --only-section .rodata -O binary $< eagle.app.v6.rodata.bin
 	@$(OBJCOPY) --only-section .irom0.text -O binary $< eagle.app.v6.irom0text.bin
 	@python $(ESP_SDK)/tools/gen_appbin.py  $(TARGET_LIB) 0 2 0 6 0	
-	
-	@echo python $(ESP_SDK)/tools/gen_appbin.py $< 0 2 0 6 0	
 	@rm eagle.app.v6.text.bin
 	@rm eagle.app.v6.data.bin
 	@rm eagle.app.v6.rodata.bin
 	@mv eagle.app.v6.irom0text.bin $(TARGET_FW_IMAGE)_0x10000.bin
 	@mv eagle.app.flash.bin $(TARGET_FW_IMAGE)_0.bin
-	
+
 $(APP_OBJECTS): $(APP_SRC) $(APP_HEADERS)
 	$(TOOLCHAIN)gcc $(CCFLAGS) $(INCLUDES) -c $< -o $@
 
 .PRECIOUS: $(TARGET_IMAGE) $(TARGET_LIB) $(APP_OBJECTS)
 
-.PHONY: default all clean
+.PHONY: default all clean flash
+
 
 default: $(TARGET_FW_IMAGE)
 
@@ -76,12 +75,13 @@ all: default
 clean:
 	-rm -f $(OBJDIR)/*.o
 	-rm -f $(OBJDIR)/*.a
-	
+
 debug:
 	@echo $(TARGET_FW_IMAGE)
 	@echo "debug"
 	@echo $(APP_OBJECTS)
 	@echo $(APP_SRC)
 	@echo $(APP_HEADERS)
-	
-	
+
+flash: $(TARGET_FW_IMAGE)	
+	esptool.py write_flash  0x0 $(TARGET_FW_IMAGE)_0.bin 0x10000 $(TARGET_FW_IMAGE)_0x10000.bin --flash_mode dio --flash_size 32m
