@@ -53,7 +53,7 @@ $(TARGET_FW_IMAGE): $(TARGET_LIB)
 	@$(OBJCOPY) --only-section .data -O binary $< eagle.app.v6.data.bin
 	@$(OBJCOPY) --only-section .rodata -O binary $< eagle.app.v6.rodata.bin
 	@$(OBJCOPY) --only-section .irom0.text -O binary $< eagle.app.v6.irom0text.bin
-	@python $(ESP_SDK)/tools/gen_appbin.py $< 0 2 0 6 0	
+	@python $(ESP_SDK)/tools/gen_appbin.py  $(TARGET_LIB) 0 2 0 6 0	
 	
 	@echo python $(ESP_SDK)/tools/gen_appbin.py $< 0 2 0 6 0	
 	@rm eagle.app.v6.text.bin
