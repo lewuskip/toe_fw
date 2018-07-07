@@ -9,7 +9,6 @@
 
 #include "wifi_ethiface.h"
 
-static volatile os_timer_t some_timer;
 
 uint32 ICACHE_FLASH_ATTR
 user_rf_cal_sector_set(void)
@@ -52,14 +51,6 @@ user_rf_cal_sector_set(void)
 
 static const int LED = 2;
 
-void ICACHE_FLASH_ATTR some_timerfunc(void	*arg){
-	if (GPIO_INPUT_GET(LED) == 0) {
-		GPIO_OUTPUT_SET(LED, 1);
-	}
-	else {
-		GPIO_OUTPUT_SET(LED, 0);
-	}
-}
 
 void ICACHE_FLASH_ATTR
 user_init(void)
@@ -69,6 +60,4 @@ user_init(void)
 	gpio_init();
 	PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U,FUNC_GPIO2);
 	gpio_output_set(0, (1 << LED), (1 << LED), 0);
-	os_timer_setfn((os_timer_t *)&some_timer, (os_timer_func_t *)some_timerfunc, NULL);
-	os_timer_arm((os_timer_t *)&some_timer, 1000	, 1);
 }

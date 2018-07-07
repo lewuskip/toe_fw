@@ -78,7 +78,10 @@ all: default
 clean:
 	-rm -f $(OBJDIR)/*.o
 	-rm -f $(OBJDIR)/*.a
-
+	
+flash_and_console: flash
+	@python $(TOPDIR)/tools/uart_console.py
+		
 debug:
 	@echo $(TARGET_FW_IMAGE)
 	@echo "debug"
