@@ -10,28 +10,34 @@
  * ----------------------------------------------------------------------------
 */
 
-typedef enum ethface_state_t {
-	ETH_IFACE_DISCONNECTED = 0,
-	ETH_IFACE_CONNECTED
-}ethface_state_t;
+#include "os_type.h"
+#include "osapi.h"
+
+#include "event_manager.h"
+
+typedef struct eventManager_t {
+	uint8_t numOfNodes;
+	uint32_t currIdx;
+}eventManager_t;
+
+typedef struct eventMessage_t {
+	void *pyaload;
+}eventMessage_t;
 
 
-typedef void (*ethiface_cb_t)(void *);
+static eventManager_t manager = {
+		.numOfNodes = 0,
+		.currIdx = 0,
+};
 
+int newEvent(eventType_t event)
+{
+	os_printf("new event\n");
 
-typedef struct wifi_ethface_t {
-	uint8_t autoconf;
-	struct station_config stationConf;
-	ethface_state_t state;
+}
 
-}wifi_ethface_t;
+int  eventManagerInit(void)
+{
 
-#ifndef PRODUCTS_TEKNET_WIFI_ETHIFACE_H_
-#define PRODUCTS_TEKNET_WIFI_ETHIFACE_H_
-
-
-
-int wifi_ethiface(uint8_t autoconf);
-
-
-#endif /* PRODUCTS_TEKNET_WIFI_ETHIFACE_H_ */
+	return 0;
+}

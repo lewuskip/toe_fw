@@ -10,28 +10,14 @@
  * ----------------------------------------------------------------------------
 */
 
-typedef enum ethface_state_t {
-	ETH_IFACE_DISCONNECTED = 0,
-	ETH_IFACE_CONNECTED
-}ethface_state_t;
+
+#ifndef NETIFACE_WIFI_H_
+#define NETIFACE_WIFI_H_
 
 
-typedef void (*ethiface_cb_t)(void *);
+int netface_wifi_init(void);
 
 
-typedef struct wifi_ethface_t {
-	uint8_t autoconf;
-	struct station_config stationConf;
-	ethface_state_t state;
-
-}wifi_ethface_t;
-
-#ifndef PRODUCTS_TEKNET_WIFI_ETHIFACE_H_
-#define PRODUCTS_TEKNET_WIFI_ETHIFACE_H_
+#endif /* NETIFACE_WIFI_H_ */
 
 
-
-int wifi_ethiface(uint8_t autoconf);
-
-
-#endif /* PRODUCTS_TEKNET_WIFI_ETHIFACE_H_ */

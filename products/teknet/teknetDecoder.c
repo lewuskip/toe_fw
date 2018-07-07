@@ -1,15 +1,9 @@
 /*
- * Copyright:
- * ----------------------------------------------------------------------------
- * This confidential and proprietary software may be used only as authorized
- * by a licensing agreement from ThingsOnEdge Limited.
- *      (C) COPYRIGHT 2018 ThingsOnEdge Limited, ALL RIGHTS RESERVED
- * The entire notice above must be reproduced on all authorized copies and
- * copies may only be made to the extent permitted by a licensing agreement
- * from ThingsOnEdge Limited.
- * ----------------------------------------------------------------------------
-*/
-
+ * teknetDecoder.c
+ *
+ *  Created on: 28 Jun 2018
+ *      Author: lewy
+ */
 
 #include "ets_sys.h"
 #include "osapi.h"
@@ -20,6 +14,7 @@
 void newEvent(uint32_t eventIdx);
 
 void ICACHE_FLASH_ATTR hw_timer_init(int source_type, u8 req);
+
 
 typedef struct teknetDcr{
 	uint8_t inPin;
@@ -55,7 +50,7 @@ void hwTimer(void)
 		hw_timer_set_func(NULL);
 		if ( (device.value &0xFF000000) == 0x44000000) {
 			os_printf("Ring %d\n", device.idx++);
-			//newEvent(device.idx);
+			newEvent(device.idx);
 		}
 	}
 	else {
@@ -63,6 +58,7 @@ void hwTimer(void)
 		hw_timer_arm(490);
 	}
 }
+
 
 void irqHandler(void *args)
 {
@@ -79,6 +75,7 @@ void irqHandler(void *args)
 	device.value = 0;
 
 	hw_timer_set_func(hwTimer);
+	//os_delay_us(100);
 	hw_timer_arm(650);
 }
 
@@ -96,6 +93,3 @@ void teknetDecoderInit(uint8_t pin)
 	gpio_pin_intr_state_set(pin, GPIO_PIN_INTR_NEGEDGE);
 	ETS_GPIO_INTR_ENABLE();
 }
-
-
-

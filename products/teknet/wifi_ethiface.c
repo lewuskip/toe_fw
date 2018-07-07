@@ -19,11 +19,15 @@
 #include "wifi_ethiface.h"
 
 wifi_ethface_t wifi = {
-		.autoconf = 0
+		.autoconf = 0,
+		.state = ETH_IFACE_DISCONNECTED
 };
 
 static const int LED = 2;
 static volatile os_timer_t some_timer;
+
+const char ssid[32] = "smacznego";
+const char password[32] = "dziekuje";
 
 void ICACHE_FLASH_ATTR some_timerfunc(void	*arg){
 	if (GPIO_INPUT_GET(LED) == 0) {
@@ -34,11 +38,74 @@ void ICACHE_FLASH_ATTR some_timerfunc(void	*arg){
 	}
 }
 
+
+void wifi_cb(System_Event_t *evt)
+{
+	os_printf("An event occurred: %x\n", evt->event);
+	os_printf("%d\n", wifi_station_get_connect_status());
+
+	switch(wifi_station_get_connect_status())
+	{
+		case STATION_IDLE:
+			os_printf("Idle\n");
+			wifi.state = ETH_IFACE_DISCONNECTED;
+			break;
+
+		case STATION_CONNECTING:
+			os_printf("STATION_CONNECTING\n");
+			wifi.state = ETH_IFACE_DISCONNECTED;
+			break;
+
+		case STATION_WRONG_PASSWORD:
+			os_printf("STATION_WRONG_PASSWORD\n");
+			wifi.state = ETH_IFACE_DISCONNECTED;
+			break;
+
+		case STATION_NO_AP_FOUND:
+			os_printf("STATION_NO_AP_FOUND\n");
+			wifi.state = ETH_IFACE_DISCONNECTED;
+			break;
+
+		case STATION_CONNECT_FAIL:
+			os_printf("STATION_CONNECT_FAIL\n");
+			wifi.state = ETH_IFACE_DISCONNECTED;
+			break;
+
+		case STATION_GOT_IP:
+			wifi.state = ETH_IFACE_CONNECTED;
+			os_printf("STATION_GOT_IP\n");
+			break;
+
+		default:
+			os_printf("Bad!\n");
+			break;
+
+	}
+}
+
+int registerClb(void)
+{
+
+	return 0;
+}
+
 int wifi_ethiface(uint8_t autoconf)
 {
 	wifi.autoconf = autoconf;
+
+	os_printf("wifi_ethiface()\n");
+
+	wifi.stationConf.bssid_set = 0;
+	os_memcpy(&wifi.stationConf.ssid,	ssid,	32);
+	os_memcpy(&wifi.stationConf.password,	password,	32);
+	wifi_set_opmode(STATIONAP_MODE);
+	wifi_station_set_config_current(&wifi.stationConf);
+	wifi_set_event_handler_cb(&wifi_cb);
+	wifi_station_connect();
+
 	os_timer_setfn((os_timer_t *)&some_timer, (os_timer_func_t *)some_timerfunc, NULL);
-	os_timer_arm((os_timer_t *)&some_timer, 500	, 1);
+	os_timer_arm((os_timer_t *)&some_timer, 100	, 1);
+
 	return 0;
 }
 
