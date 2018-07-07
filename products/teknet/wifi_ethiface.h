@@ -23,7 +23,7 @@ typedef struct wifi_ethface_t {
 	uint8_t autoconf;
 	struct station_config stationConf;
 	ethface_state_t state;
-
+	ethiface_cb_t clb;
 }wifi_ethface_t;
 
 #ifndef PRODUCTS_TEKNET_WIFI_ETHIFACE_H_

@@ -15,6 +15,8 @@
 #include "user_interface.h"
 #include "espconn.h"
 
+#include "wifi_ethiface.h"
+
 typedef struct eventNodeManager_t {
 	struct espconn 	esp_conn;
 	esp_tcp 		esptcp;
@@ -80,12 +82,19 @@ void ICACHE_FLASH_ATTR nodeTimer(void	*arg){
 
 }
 
+void ethIfaceCallBack(void *attr)
+{
+	os_orintf("Etg new status\n");
+
+}
+
 int eventNodeInit(void)
 {
-	evnetNodeReConnect();
+	//evnetNodeReConnect();
 
 	os_timer_setfn((os_timer_t *)&manager.timer, (os_timer_func_t *)nodeTimer, NULL);
 	os_timer_arm((os_timer_t *)&manager.timer, 1000	, 1);
 
+	registerClb(&ethIfaceCallBack);
 	return 1;
 }

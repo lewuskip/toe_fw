@@ -20,7 +20,8 @@
 
 wifi_ethface_t wifi = {
 		.autoconf = 0,
-		.state = ETH_IFACE_DISCONNECTED
+		.state = ETH_IFACE_DISCONNECTED,
+		.clb = NULL
 };
 
 static const int LED = 2;
@@ -81,12 +82,27 @@ void wifi_cb(System_Event_t *evt)
 			break;
 
 	}
+
+	if (wifi.clb != NULL) {
+		wifi.clb(NULL);
+	}
 }
 
-int registerClb(void)
+int registerClb(ethiface_cb_t clb)
 {
+	return
+}
 
+int registerClb(ethiface_cb_t clb)
+{
+	wifi.clb = clb;
 	return 0;
+}
+
+int wifiEnable(void)
+{
+	wifi_station_connect();
+
 }
 
 int wifi_ethiface(uint8_t autoconf)
@@ -101,7 +117,6 @@ int wifi_ethiface(uint8_t autoconf)
 	wifi_set_opmode(STATIONAP_MODE);
 	wifi_station_set_config_current(&wifi.stationConf);
 	wifi_set_event_handler_cb(&wifi_cb);
-	wifi_station_connect();
 
 	os_timer_setfn((os_timer_t *)&some_timer, (os_timer_func_t *)some_timerfunc, NULL);
 	os_timer_arm((os_timer_t *)&some_timer, 100	, 1);
