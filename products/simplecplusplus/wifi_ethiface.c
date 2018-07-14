@@ -25,7 +25,7 @@ wifi_ethface_t wifi = {
 };
 
 static const int LED = 2;
-static volatile os_timer_t some_timer;
+static volatile os_timer_t some_timer_wifi;
 
 const char ssid[32] = "smacznego";
 const char password[32] = "dziekuje";
@@ -122,8 +122,8 @@ int wifi_ethiface(uint8_t autoconf)
 	wifi_station_disconnect();
 	wifi_set_opmode(NULL_MODE);
 
-	os_timer_setfn((os_timer_t *)&some_timer, (os_timer_func_t *)some_timerfunc, NULL);
-	os_timer_arm((os_timer_t *)&some_timer, 100	, 1);
+	os_timer_setfn((os_timer_t *)&some_timer_wifi, (os_timer_func_t *)some_timerfunc, NULL);
+	os_timer_arm((os_timer_t *)&some_timer_wifi, 100	, 1);
 
 	return 0;
 }

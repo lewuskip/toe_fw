@@ -63,28 +63,16 @@ user_rf_cal_sector_set(void)
     return rf_cal_sec;
 }
 
-static const int BUTTON = 5;
-static const int LED=2;
-static volatile os_timer_t buttonTimer;
-
-void ICACHE_FLASH_ATTR timerEvent(void	*arg){
-	if (GPIO_INPUT_GET(BUTTON) == 0) {
-//		newEvent(EVENT_BUTTON_PRESSED);
-	}
-}
-
-void ICACHE_FLASH_ATTR
-user_init(void)
+void ICACHE_FLASH_ATTR user_init(void)
 {
-	wifi_ethiface(0);
 
+	wifi_ethiface(0);
 	wifi_softap_dhcps_stop();
 
 	gpio_init();
 	PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U,FUNC_GPIO2);
-	gpio_output_set(0, (1 << LED), (1 << LED), (1<<BUTTON));
+//	gpio_output_set(0, (1 << LED), (1 << LED), (1<<BUTTON));
 
-	//os_timer_setfn((os_timer_t *)&buttonTimer, (os_timer_func_t *)timerEvent, NULL);
-	//os_timer_arm((os_timer_t *)&buttonTimer, 200	, 1);
-	//eventNodeInit();
+	eventNodeInit();
+	wifi_ethiface_enable();
 }

@@ -10,10 +10,15 @@ TARGET_LIB = $(BINDIR)/$(APP_NAME)_app.o
 
 APP_HEADERS = $(wildcard *.h)
 APP_SRC = $(wildcard *.c)
+APP_CXXSRC = $(wildcard *.cpp)
+
 
 # Tool chain definitions
 TOOLCHAIN=xtensa-lx106-elf-
 OBJCOPY = xtensa-lx106-elf-objcopy
+CXX = xtensa-lx106-elf-g++
+CPP = xtensa-lx106-elf-cpp
+
 
 CCFLAGS = \
 	-Os \
@@ -37,8 +42,8 @@ LIBS = -lc -lgcc -lhal -lphy -lpp -lnet80211 -llwip -lwpa -lcrypto -lmain -ldriv
 TARGET_LDFLAGS =  -Wl,--no-check-sections -Wl,--gc-sections -u call_user_start -Wl,-static -Wl,--start-group   
 INCLUDES +=	-I$(ESP_SDK)/include -I$(ESP_SDK)/driver_lib/include	
 
-
 APP_OBJECTS = $(patsubst %.c, $(OBJDIR)/%.o, $(APP_SRC))
+APP_OBJECTS += $(patsubst %.cpp, $(OBJDIR)/%.o, $(APP_CXXSRC))
 
 $(TARGET_APP_LIB): $(APP_OBJECTS)
 	$(TOOLCHAIN)ar ru $@ $^
@@ -61,15 +66,16 @@ $(TARGET_FW_IMAGE): $(TARGET_LIB)
 
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(@D)
-	@echo $<
-	@echo $@
-	@echo $(APP_SRC)
 	$(TOOLCHAIN)gcc $(CCFLAGS) $(INCLUDES) -c $< -o $@
+
+$(OBJDIR)/%.o: %.cpp
+	@mkdir -p $(@D)
+	$(TOOLCHAIN)g++ $(CCFLAGS) $(INCLUDES) -o $@ -c $<
+
 
 .PRECIOUS: $(TARGET_IMAGE) $(TARGET_LIB) $(APP_OBJECTS)
 
 .PHONY: default all clean flash
-
 
 default: $(TARGET_FW_IMAGE)
 
@@ -90,4 +96,4 @@ debug:
 	@echo $(APP_HEADERS)
 
 flash: $(TARGET_FW_IMAGE)	
-	esptool.py write_flash  0x0 $(TARGET_FW_IMAGE)_0.bin 0x10000 $(TARGET_FW_IMAGE)_0x10000.bin --flash_mode dio --flash_size 32m
+	esptool.py write_flash  0x0 $(TARGET_FW_IMAGE)_0.bin 0x10000 $(TARGET_FW_IMAGE)_0x10000.bin 0x3FC000 $(TOPDIR)/images/esp_init_data_default_v08.bin 0x3FE000 $(TOPDIR)/images/blank.bin --flash_mode dio --flash_size 32m
